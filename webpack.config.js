@@ -1,4 +1,5 @@
 const path = require('path');
+const htmlWebpackPlugin = require('html-webpack-plugin')
 
 const outputPath = path.resolve(__dirname, 'dist');
 
@@ -12,6 +13,11 @@ module.exports = {
     //laoderの登録（testにuseで指定する適応させるファイルの記載）
     module: {
         rules: [
+            { 
+                test: /\.js$/, 
+                exclude: /node_modules/, 
+                loader: "babel-loader" 
+            },
             { 
                 test: /\.css$/, 
                 use: [
@@ -36,11 +42,21 @@ module.exports = {
                     limit: 2048,
                     name: './images/[name].[ext]'
                 }
+            },
+            {
+                test: /\.html$/,
+                loader: 'html-loader'
             }
         ]
     },
     //起動時にページを開くように指定
     devServer: {
         contentBase: outputPath
-    }
+    },
+    plugins: [
+        new htmlWebpackPlugin({
+            template: './src/index.html',
+            filename: './index.html'
+        })
+    ]
 };
