@@ -25,6 +25,14 @@ module.exports = {
     //laoderの登録（testにuseで指定する適応させるファイルの記載）
     module: {
         rules: [
+            //eslint
+            {
+                //enforce: "pre"で他のローダー（enforce: "pre"の記載がないもの）よりも先に処理を行う
+                enforce: "pre",
+                test: /\.jsx?$/,
+                exclude: /node_modules/,
+                loader: "eslint-loader"
+            },
             { 
                 test: /\.js$/, 
                 exclude: /node_modules/, 
