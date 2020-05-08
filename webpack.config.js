@@ -1,5 +1,7 @@
 const path = require('path');
 const htmlWebpackPlugin = require('html-webpack-plugin')
+const miniCssExtractPlugin = require('mini-css-extract-plugin')
+const optimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 
 const outputPath = path.resolve(__dirname, 'dist');
 
@@ -10,6 +12,16 @@ module.exports = {
         filename: 'main.js',
         path: outputPath
     },
+    plugins: [
+        new htmlWebpackPlugin({
+            template: './src/index.html',
+            filename: './index.html'
+        }),
+        new miniCssExtractPlugin({
+            //nameはdefaultでmainが使用される。
+            filename: '[name].[hash].css'
+        })
+    ],
     //laoderの登録（testにuseで指定する適応させるファイルの記載）
     module: {
         rules: [
@@ -19,18 +31,10 @@ module.exports = {
                 loader: "babel-loader" 
             },
             { 
-                test: /\.css$/, 
+                test: /\.(sc|c)ss$/, 
                 use: [
                     //reverse order で実行されるので記述順に注意
-                    'style-loader',
-                    'css-loader'
-                ]
-            },
-            { 
-                test: /\.scss$/, 
-                use: [
-                    //reverse order で実行されるので記述順に注意
-                    'style-loader',
+                    miniCssExtractPlugin.loader,
                     'css-loader',
                     'sass-loader'
                 ]
@@ -53,10 +57,9 @@ module.exports = {
     devServer: {
         contentBase: outputPath
     },
-    plugins: [
-        new htmlWebpackPlugin({
-            template: './src/index.html',
-            filename: './index.html'
-        })
-    ]
+    optimization: {
+        minimizer: [
+            new optimizeCssAssetsWebpackPlugin({})
+        ]
+    }
 };
